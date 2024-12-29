@@ -2,13 +2,27 @@ package seed
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 
 	HRouter "github.com/julienschmidt/httprouter"
 )
 
 var MethodSep = ","
+
+var allowedMethods = []string{
+	http.MethodGet,
+	http.MethodHead,
+	http.MethodPost,
+	http.MethodPut,
+	http.MethodPatch,
+	http.MethodDelete,
+	http.MethodConnect,
+	http.MethodOptions,
+	http.MethodTrace,
+}
 
 // Router 路由器
 type Router interface {
@@ -81,6 +95,9 @@ func (r *router) HandleStd(methods string, path string, handler http.Handler, ms
 	var h = r.Trans2Handle(handler, ms...)
 	var mss = strings.Split(methods, MethodSep)
 	for _, v := range mss {
+		if slices.Index(allowedMethods, v) == -1 {
+			panic(fmt.Sprintf("invalid router method '%s' for path '%s'", v, path))
+		}
 		r.Handle(v, path, h)
 	}
 }
