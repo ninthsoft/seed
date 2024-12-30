@@ -1,6 +1,7 @@
 package seed
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -15,15 +16,18 @@ type MSeed interface {
 
 	// Run 启动HTTPServer
 	//
-	// 	addrs 监听的端口,非必选，但如果没有通过HTTPServer pointer修改且值不给可能导致服务启动失败
-	Run(addrs ...string) error
+	// 	如果需要手动设定启动占用的端口请调用SetHTTPServer
+	Run() error
 
 	// Run 启动HTTPServer
 	//
 	// 	certFile https certFile
 	// 	keyFile https keyFile
-	// 	addrs 监听的端口,非必选，但如果没有通过HTTPServer pointer修改且值不给可能导致服务启动失败
-	RunTLS(certFile, keyFile string, addrs ...string) error
+	// 	如果需要手动设定启动占用的端口请调用SetHTTPServer
+	RunTLS(certFile, keyFile string) error
+
+	// Shutdown gracefully shuts down the server
+	Shutdown(ctx context.Context) error
 }
 
 // mseed is driven by Router
@@ -46,11 +50,7 @@ func (c *mseed) SetHTTPServer(srv *http.Server) MSeed {
 	return c
 }
 
-// start http server
-func (c *mseed) Run(addrs ...string) error {
-	if len(addrs) > 0 {
-		c.server.Addr = addrs[0]
-	}
+func (c *mseed) Run() error {
 	// set handler as itself
 	c.server.Handler = c
 
@@ -60,11 +60,15 @@ func (c *mseed) Run(addrs ...string) error {
 	return c.server.ListenAndServe()
 }
 
-func (c *mseed) RunTLS(certFile, keyFile string, addrs ...string) error {
+func (c *mseed) RunTLS(certFile, keyFile string) error {
 	c.certFile = certFile
 	c.keyFile = keyFile
 	c.enableTLS = true
-	return c.Run(addrs...)
+	return c.Run()
+}
+
+func (c *mseed) Shutdown(ctx context.Context) error {
+	return c.HTTPServer().Shutdown(ctx)
 }
 
 // New return *mseed
