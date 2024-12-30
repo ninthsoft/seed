@@ -2,8 +2,6 @@ package seed
 
 import (
 	"net/http"
-
-	"github.com/ory/graceful"
 )
 
 type MSeed interface {
@@ -56,13 +54,10 @@ func (c *mseed) Run(addrs ...string) error {
 	if c.server.Handler == nil {
 		c.server.Handler = c
 	}
-	var fn = func() error {
-		if c.enableTLS {
-			return c.server.ListenAndServeTLS(c.certFile, c.keyFile)
-		}
-		return c.server.ListenAndServe()
+	if c.enableTLS {
+		return c.server.ListenAndServeTLS(c.certFile, c.keyFile)
 	}
-	return graceful.Graceful(fn, c.server.Shutdown)
+	return c.server.ListenAndServe()
 }
 
 func (c *mseed) RunTLS(certFile, keyFile string, addrs ...string) error {
