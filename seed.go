@@ -51,9 +51,9 @@ func (c *mseed) Run(addrs ...string) error {
 	if len(addrs) > 0 {
 		c.server.Addr = addrs[0]
 	}
-	if c.server.Handler == nil {
-		c.server.Handler = c
-	}
+	// set handler as itself
+	c.server.Handler = c
+
 	if c.enableTLS {
 		return c.server.ListenAndServeTLS(c.certFile, c.keyFile)
 	}
