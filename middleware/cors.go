@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 func CORS(ctx context.Context, w http.ResponseWriter, req *http.Request, next seed.MiddleWareQueue) bool {

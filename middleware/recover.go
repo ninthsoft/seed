@@ -11,7 +11,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 // Recoverer is a middleware that recovers from panics, logs the panic (and a

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 // Timeout is a middleware that cancels ctx after a given timeout and return

@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 type ContextKey string

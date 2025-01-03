@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 var trueClientIP = http.CanonicalHeaderKey("True-Client-IP")

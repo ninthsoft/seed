@@ -3,8 +3,8 @@ package bind
 import (
 	"github.com/gookit/validate"
 	"github.com/gorilla/schema"
-	"github.com/hexthink/seed"
-	"github.com/hexthink/seed/render"
+	"github.com/ninthsoft/seed"
+	"github.com/ninthsoft/seed/render"
 )
 
 type BindType int

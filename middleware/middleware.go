@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/hexthink/seed"
+	"github.com/ninthsoft/seed"
 )
 
 // New will create a new middleware from a http.Handler.

@@ -1,4 +1,4 @@
-module github.com/hexthink/seed
+module github.com/ninthsoft/seed
 
 go 1.23.4
 
