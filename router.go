@@ -81,7 +81,7 @@ func (r *router) Group(prefix string, f func(r Router), ms ...MiddlewareFunc) {
 	mws = append(mws, ms...)
 
 	//make new router prefix
-	var router = &router{middlewareFuncs: mws, prefix: r.prefix + prefix}
+	var router = &router{Router: r.Router, middlewareFuncs: mws, prefix: r.prefix + prefix}
 	f(router)
 }
 
@@ -94,11 +94,12 @@ func (r *router) HandleFunc(methods string, path string, handlerFunc HandlerFunc
 func (r *router) HandleStd(methods string, path string, handler http.Handler, ms ...MiddlewareFunc) {
 	var h = r.Trans2Handle(handler, ms...)
 	var mss = strings.Split(methods, MethodSep)
+	var apath = fmt.Sprintf("%s%s", r.prefix, path)
 	for _, v := range mss {
 		if slices.Index(allowedMethods, v) == -1 {
-			panic(fmt.Sprintf("invalid router method '%s' for path '%s'", v, path))
+			panic(fmt.Sprintf("invalid router method '%s' for path '%s'", v, apath))
 		}
-		r.Handle(v, path, h)
+		r.Handle(v, apath, h)
 	}
 }
 
