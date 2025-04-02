@@ -57,6 +57,9 @@ type Router interface {
 	// 	prefix路由前缀，如 "/user"
 	// 	ms 是该分组的中间件函数
 	Group(prefix string, f func(r Router), ms ...MiddlewareFunc)
+
+	// notFound 设置全局404状态处理器
+	notFound(http.Handler)
 }
 
 type router struct {
@@ -85,12 +88,10 @@ func (r *router) Group(prefix string, f func(r Router), ms ...MiddlewareFunc) {
 	f(router)
 }
 
-// HandleFunc handlerFunc方式注册路由
 func (r *router) HandleFunc(methods string, path string, handlerFunc HandlerFunc, ms ...MiddlewareFunc) {
 	r.HandleStd(methods, path, handlerFunc.Handler(), ms...)
 }
 
-// HandleStd  http.Handler方式注册路由
 func (r *router) HandleStd(methods string, path string, handler http.Handler, ms ...MiddlewareFunc) {
 	var h = r.Trans2Handle(handler, ms...)
 	var mss = strings.Split(methods, MethodSep)
@@ -124,6 +125,17 @@ func (r *router) Trans2Handle(h http.Handler, ms ...MiddlewareFunc) HRouter.Hand
 	return f
 }
 
+func (r *router) notFound(h http.Handler) {
+	r.NotFound = h
+}
+
 func NewRouter() Router {
-	return &router{Router: HRouter.New(), prefix: "", middlewareFuncs: []MiddlewareFunc{}}
+	var r = &HRouter.Router{
+		RedirectTrailingSlash:  true,
+		RedirectFixedPath:      true,
+		HandleMethodNotAllowed: false,
+		HandleOPTIONS:          false,
+		NotFound:               notFound,
+	}
+	return &router{Router: r, prefix: "", middlewareFuncs: []MiddlewareFunc{}}
 }

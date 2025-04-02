@@ -20,7 +20,16 @@ func (h HandlerFunc) Handler() http.Handler {
 	return f
 }
 
-// NotFoundHandler 404默认处理器
-var NotFoundHandler HandlerFunc = func(ctx context.Context, req Request) Response {
-	return NopResponse(http.StatusNotFound)
-}
+var notFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// Preflight request for OPTIONS request method
+	if r.Method == http.MethodOptions {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD")
+		w.Header().Add("Access-Control-Allow-Headers", "*")
+		w.Header().Add("Access-Control-Allow-Credentials", "true")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	http.NotFoundHandler().ServeHTTP(w, r)
+})

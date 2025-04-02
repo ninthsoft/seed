@@ -28,6 +28,9 @@ type MSeed interface {
 
 	// Shutdown gracefully shuts down the server
 	Shutdown(ctx context.Context) error
+
+	// NotFound 注册全局的404处理器
+	NotFound(h http.Handler)
 }
 
 // mseed is driven by Router
@@ -69,6 +72,10 @@ func (c *mseed) RunTLS(certFile, keyFile string) error {
 
 func (c *mseed) Shutdown(ctx context.Context) error {
 	return c.HTTPServer().Shutdown(ctx)
+}
+
+func (c *mseed) NotFound(h http.Handler) {
+	c.notFound(h)
 }
 
 // New return *mseed
