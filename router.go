@@ -131,8 +131,8 @@ func (r *router) notFound(h http.Handler) {
 
 func NewRouter() Router {
 	var r = &HRouter.Router{
-		RedirectTrailingSlash:  true,
-		RedirectFixedPath:      true,
+		RedirectTrailingSlash:  false,
+		RedirectFixedPath:      false,
 		HandleMethodNotAllowed: false,
 		HandleOPTIONS:          false,
 		NotFound:               notFound,
