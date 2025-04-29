@@ -90,6 +90,6 @@ func (c *mseed) NotFound(h http.Handler) {
 func New() MSeed {
 	return &mseed{
 		Router: NewRouter(),
-		server: &http.Server{},
+		server: &http.Server{Addr: ":8080"},
 	}
 }
