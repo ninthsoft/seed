@@ -60,6 +60,9 @@ type Router interface {
 
 	// notFound 设置全局404状态处理器
 	notFound(http.Handler)
+
+	// 静态资源
+	static(path string, root http.FileSystem)
 }
 
 type router struct {
@@ -127,6 +130,10 @@ func (r *router) Trans2Handle(h http.Handler, ms ...MiddlewareFunc) HRouter.Hand
 
 func (r *router) notFound(h http.Handler) {
 	r.NotFound = h
+}
+
+func (r *router) static(path string, root http.FileSystem) {
+	r.ServeFiles(path, root)
 }
 
 func NewRouter() Router {

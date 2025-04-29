@@ -14,6 +14,9 @@ type MSeed interface {
 	// 设置默认的http server
 	SetHTTPServer(srv *http.Server) MSeed
 
+	// 静态资源服务
+	Static(path string, root http.FileSystem) MSeed
+
 	// Run 启动HTTPServer
 	//
 	// 	如果需要手动设定启动占用的端口请调用SetHTTPServer
@@ -50,6 +53,11 @@ func (c *mseed) HTTPServer() *http.Server {
 
 func (c *mseed) SetHTTPServer(srv *http.Server) MSeed {
 	c.server = srv
+	return c
+}
+
+func (c *mseed) Static(path string, root http.FileSystem) MSeed {
+	c.static(path, root)
 	return c
 }
 
