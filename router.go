@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"path"
 	"slices"
 	"strings"
 
@@ -95,10 +96,10 @@ func (r *router) HandleFunc(methods string, path string, handlerFunc HandlerFunc
 	r.HandleStd(methods, path, handlerFunc.Handler(), ms...)
 }
 
-func (r *router) HandleStd(methods string, path string, handler http.Handler, ms ...MiddlewareFunc) {
+func (r *router) HandleStd(methods string, mpath string, handler http.Handler, ms ...MiddlewareFunc) {
 	var h = r.Trans2Handle(handler, ms...)
 	var mss = strings.Split(methods, MethodSep)
-	var apath = fmt.Sprintf("%s%s", r.prefix, path)
+	var apath = path.Clean(fmt.Sprintf("%s%s", r.prefix, mpath))
 	for _, v := range mss {
 		if slices.Index(allowedMethods, v) == -1 {
 			panic(fmt.Sprintf("invalid router method '%s' for path '%s'", v, apath))
